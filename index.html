@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>snAIke</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <main class="app">
+            <header class="header">
+                <div>
+                    <h1>snAIke</h1>
+                    <p>Clankers who know how to slither!</p>
+                </div>
+                <span class="version"> 15 x 15 grid!</span>
+            </header>
+
+            <nav class="modes">
+                <button class="mode active" data-mode="train">DOJO</button>
+                <button class="mode" data-mode="watch">OPP</button>
+                <button class="mode" data-mode="player">Fight IT!</button>
+            </nav>
+
+            <section id="training-section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Clankergarten</h2>
+                        <p>Watch three of em train</p>
+                    </div>
+                    <span class="mode-indicator">MODE 01</span>
+                </div>
+
+                <div class="training-controls panel">
+                    <div class="control-group">
+                        <label for="population-size">Population-size</label>
+                        <input
+                          id="population-size"
+                          type="number"
+                          min="6"
+                          max="300"
+                          step="3"
+                          value="60"
+                        />
+                    </div>
+
+                    <div class="control-buttons">
+                        <button id="start-training" class="primary">Start</button>
+                        <button id="stop-training">Stop</button>
+                        <button id="reset-training">Reset</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat panel">
+                        <span>Generation</span>
+                        <strong id="generation">0</strong>
+                    </div>
+
+                    <div class="stat panel">
+                        <span>Population</span>
+                        <strong id="population-count">60</strong>
+                    </div>
+
+                    <div class="stat panel">
+                        <span>Evaluated</span>
+                        <strong id="evaluated">0</strong>
+                    </div>
+
+                    <div class="stat panel">
+                        <span>Best score</span>
+                        <strong id="training-best">0</strong>
+                    </div>
+
+                    <div class="stat panel">
+                        <span>Avg. Score</span>
+                        <strong id="average-score">0</strong>
+                    </div>
+                </div>
+
+                <div class="section-heading board-heading">
+                    <div>
+                        <h2>Live simulation</h2>
+                        <p>Each board has a different clankergartener</p>
+                    </div>
+                </div>
+
+                <div id="training-games" class="training-games">
+                    <div class="training-game panel">
+                        <div class="board-heading-small">
+                            <strong>CLANKER 01</strong>
+                            <span>Score: <b id="score-0">0</b></span>
+                        </div>
+                        <canvas id="training-canvas-0" width="450" height="450"></canvas>
+                    </div>
+
+                    <div class="training-game panel">
+                        <div class="board-heading-small">
+                            <strong>CLANKER 02</strong>
+                            <span>Score: <b id="score-1">0</b></span>
+                        </div>
+                        <canvas id="training-canvas-1" width="450" height="450"></canvas>
+                    </div>
+
+                    <div class="training-game panel">
+                        <div class="board-heading-small">
+                            <strong>CLANKER 03</strong>
+                            <span>Score: <b id="score-2">0</b></span>
+                        </div>
+                        <canvas id="training-canvas-2" width="450" height="450"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <section id="watch-section" hidden>
+                <div class="section-heading">
+                    <div>
+                        <h2>Watch AI</h2>
+                        <p>Watch the best "AI"... ahem sry... CLANKER play!</p>
+                    </div>
+                    <span class="mode-indicator">MODE 02</span>
+                </div>
+
+                <div class="play-layout">
+                    <div class="game-board panel">
+                        <canvas id="watch-canvas" width="450" height="450"></canvas>
+                    </div>
+
+                    <div class="network-panel">
+                        <canvas id="watch-network" width="450" height="450"></canvas>
+                    </div>
+
+                    <div class="play-sidebar">
+                        <div class="stat-panel">
+                            <span>High Score</span>
+                            <strong id="watch-best">0</strong>
+                        </div>
+
+                        <div class="stat panel">
+                            <span>Current Score</span>
+                            <strong id="watch-score">0</strong>
+                        </div>
+
+                        <div class="panel button-panel">
+                            <button id="watch-start" class="primary">Start IT!</button>
+                            <button id="watch-pause">Pause / Return</button>
+                            <button id="watch-restart">Restart</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="player-section" hidden>
+                <div class="section-heading">
+                    <div>
+                        <h2>Beat the CLANKER take its job muhehehehehe</h2>
+                        <p>Play Snake!</p>
+                    </div>
+                    <span class="mode-indicator">MODE 03</span>
+                </div>
+
+                <div class="play-layout">
+                    <div class="game-board panel">
+                        <canvas id="player-canvas" width="450" height="450"></canvas>
+                    </div>
+
+                    <div class="play-sidebar">
+                        <div class="stat panel">
+                            <span>High Score</span>
+                            <strong id="player-record">0</strong>
+                        </div>
+
+                        <div class="stat panel">
+                            <span>Your Score</span>
+                            <strong id="your-score">0</strong>
+                        </div>
+
+                        <div class="panel button-panel">
+                            <button id="player-start" class="primary">Start game</button>
+                            <button id="player-restart">Restart</button>
+                        </div>
+
+                        <div class="panel instruction">
+                            <strong>Controls</strong>
+                            <p>WASD or arrow keys to move</p>
+                            <p>space to pause or resume</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        <script type="module" src="js/main.js"></script>
+    </body>
+</html>
