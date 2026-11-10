@@ -6,10 +6,10 @@
     --background: #f5f6f8;
     --surface: #ffffff;
     --border: #e1e4e9;
-    --text: #20242b;
-    --muted: #737b88;
-    --primary: #2869d8;
-    --primary-hover: #1d56b8;
+    --text: #00040a;
+    --muted: #4f668b;
+    --primary: #28bed8;
+    --primary-hover: #1da1b8;
 }
 
 body {
