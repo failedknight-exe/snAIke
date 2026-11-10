@@ -1,6 +1,6 @@
-import { CONFIG } from "'/config.js";
+import { CONFIG } from "./config.js";
 
-import { createBrain, copyBrain, crossoverBrains, mutateBrain, decide } from "./brain.js";
+import { createBrain, copyBrain, crossoverBrain, mutateBrain, decide } from "./brain.js";
 
 import { SnakeGame } from "./snake.js";
 import { calculateFitness } from "./fitness.js";

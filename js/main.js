@@ -1,10 +1,10 @@
 import { CONFIG } from "./config.js";
-import { Evolution } from ".evolution.js";
+import { Evolution } from "./evolution.js";
 import { SnakeGame } from "./snake.js";
-import { decideWIthDetails, copyBrain } from "./brain.js";
+import { decideWithDetails, copyBrain } from "./brain.js";
 import { Renderer } from "./renderer.js";
 import { NetworkView } from "./network-view.js";
-import { PlayeInput } from "./input.js";
+import { PlayerInput } from "./input.js";
 
 const $ = id => document.getElementById(id);
 
@@ -71,7 +71,9 @@ function renderLeaderboard() {
 
 loadLeaderboard();
 
-const trainingRenderers = [0, 1, 2].map(index => new Renderer($(`training-canvas-$(index)`)));
+const trainingRenderers = [0, 1, 2].map(index =>
+    new Renderer($(`training-canvas-${index}`))
+);
 
 const watchRenderer = new Renderer($("watch-canvas"));
 const playerRenderer = new Renderer($("player-canvas"));
@@ -179,3 +181,166 @@ function resetTraining() {
     drawAll();
     updateTrainingStats();
 }
+
+function startWatch() {
+    const selectedBrain = evolution.Champion || evolution.population[0];
+
+    if (!selectedBrain) {
+        alert("Start training first.");
+        return;
+    }
+
+    watchBrain = copyBrain(selectedBrain);
+    watchGame = new SnakeGame();
+
+    watchRunning = true;
+    watchPaused = false;
+    watchAccumulator = 0;
+
+    $("watch-score").textContent = "0";
+
+    renderLeaderboard();
+
+    watchRenderer.draw(watchGame);
+    watchRenderer.draw(watchBrain);
+}
+
+function updateWatch(delta) {
+    if (!watchGame) return;
+
+    if (watchRunning && !watchPaused) {
+        watchAccumulator += delta;
+
+        while (watchAccumulator >= 0.12) {
+            watchAccumulator -= 0.12;
+
+            if (!watchBrain || watchGame.over) {
+                watchRunning = false;
+                break;
+            }
+
+            const decision = decideWithDetails(watchGame, watchBrain);
+
+            networkRenderer.draw(watchBrain, decision);
+
+            watchGame.step(decision.action);
+
+            submitLeaderboardScore(watchGame.score, "AI");
+
+            if (watchGame.over) {
+                watchRunning = false;
+                break;
+            }
+        }
+    }
+
+    watchRenderer.draw(watchGame);
+    $("watch-score").textContent = watchGame.score;
+
+    renderLeaderboard();
+}
+
+function startPlayer() {
+    playerGame = new SnakeGame();
+
+    playerInput.reser();
+
+    playerRunning = true;
+    playerAccumalator = 0;
+
+    $("your-score").textContent = "0";
+
+    renderLeaderboard();
+    playerRenderer.draw(playerGame);
+}
+
+function updatePlayer(delta) {
+    if (!playerGame) return;
+
+    if (playerRunning && !playerInput.paused) {
+        playerAccumalator += delta;
+
+        while (playerAccumalator >= 0.12) {
+            playerAccumalator -= 0.12;
+
+            const action = playerInput.getAction();
+
+            playerGame.step(action);
+
+            submitLeaderboardScore(playerGame.score, "YOU");
+
+            if (playerGame.over) {
+                playerRunning = false;
+                break;
+            }
+        }
+    }
+
+    playerRenderer.draw(playerGame);
+    $("your-score").textContent = playerGame.score;
+
+    renderLeaderboard();
+}
+
+function drawAll() {
+    drawTraining();
+
+    if (watchGame) {
+        watchRenderer.draw(watchGame);
+    }
+
+    if (playerGame) {
+        playerRenderer.draw(playerGame);
+    }
+
+    renderLeaderboard();
+}
+
+function frame(timestamp) {
+    const delta = Math.min((timestamp - lastFrame) / 1000 || 0, 0.1);
+
+    lastFrame = timestamp;
+
+    updateTraining();
+    updateWatch(delta);
+    updatePlayer(delta);
+
+    requestAnimationFrame(frame);
+}
+
+document.querySelectorAll(".mode").forEach(button => {
+    button.addEventListener("click", () => {setMode(button.dataset.mode);});
+});
+
+$("start-training").addEventListener("click", startTraining);
+$("stop-training").addEventListener("click", stopTrainng);
+$("reset-training").addEventListener("click", resetTraining);
+
+$("training-speed").addEventListener("input", event => {
+    trainingSpeed = Number(event.target.value);
+    $("speed-value").textContent = trainingSpeed;
+});
+
+$("watch-start").addEventListener("click", startWatch);
+$("watch-restart").addEventListener("click", startWatch);
+
+$("watch-pause").addEventListener("click", () => {
+    if (!watchGame) return;
+
+    watchPaused = !watchPaused;
+});
+
+$("player-start").addEventListener("click", startPlayer);
+$("player-restart").addEventListener("click", startPlayer);
+
+window.addEventListener("beforeunload", () => {
+    evolution.save();
+    saveLeaderboard();
+});
+
+setMode("train");
+renderLeaderboard();
+drawAll();
+updateTrainingStats();
+
+requestAnimationFrame(frame);
