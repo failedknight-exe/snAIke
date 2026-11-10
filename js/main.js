@@ -150,8 +150,8 @@ function startTraining() {
 
     if (!Number.isFinite(requested)) return;
 
-    const size = Math.max(6, Math.min(r00, requested));
-    const roundedSize = Math.cell(size / 3) * 3;
+    const size = Math.max(6, Math.min(300, requested));
+    const roundedSize = Math.ceil(size / 3) * 3;
 
     $("population-size").value = roundedSize;
 
@@ -163,27 +163,28 @@ function startTraining() {
     drawTraining();
 }
 
-function stopTrainng() {
+function stopTraining() {
     evolution.running = false;
     evolution.save();
 }
 
 function resetTraining() {
-    stopTrainng();
+    stopTraining();
 
     const requested = Number($("population-size").value) || CONFIG.POPULATION;
 
     const size = Math.max(6, Math.min(300, requested));
-    const roundedSize = Math.cell(size  /3) * 3;
+    const roundedSize = Math.ceil(size / 3) * 3;
 
     $("population-size").value = roundedSize;
+    evolution.newPopulation(roundedSize);
 
     drawAll();
     updateTrainingStats();
 }
 
 function startWatch() {
-    const selectedBrain = evolution.Champion || evolution.population[0];
+    const selectedBrain = evolution.champion || evolution.population[0];
 
     if (!selectedBrain) {
         alert("Start training first.");
@@ -202,7 +203,7 @@ function startWatch() {
     renderLeaderboard();
 
     watchRenderer.draw(watchGame);
-    watchRenderer.draw(watchBrain);
+    networkRenderer.draw(watchBrain);
 }
 
 function updateWatch(delta) {
@@ -243,7 +244,7 @@ function updateWatch(delta) {
 function startPlayer() {
     playerGame = new SnakeGame();
 
-    playerInput.reser();
+    playerInput.reset();
 
     playerRunning = true;
     playerAccumalator = 0;
@@ -313,7 +314,7 @@ document.querySelectorAll(".mode").forEach(button => {
 });
 
 $("start-training").addEventListener("click", startTraining);
-$("stop-training").addEventListener("click", stopTrainng);
+$("stop-training").addEventListener("click", stopTraining);
 $("reset-training").addEventListener("click", resetTraining);
 
 $("training-speed").addEventListener("input", event => {

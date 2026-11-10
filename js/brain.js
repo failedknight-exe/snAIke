@@ -19,7 +19,7 @@ export function copyBrain(brain) {
 
 export function crossoverBrain(a, b) {
     return {
-        weights: a.weights.map((weight, i) => Math.random() < 0.5 ? weight : b.weights[1])
+        weights: a.weights.map((weight, i) => Math.random() < 0.5 ? weight : b.weights[i])
     };
 }
 
@@ -30,7 +30,7 @@ export function mutateBrain(brain) {
         if (Math.random() < CONFIG.MUTATION_RATE) {
             child.weights[i] += randomGaussian() * CONFIG.MUTATION_STRENGTH;
 
-            child.weights[i] = Math.max(-3, Math.min(3, child.weights[1]));
+            child.weights[i] = Math.max(-3, Math.min(3, child.weights[i]));
         }
     }
 
@@ -38,7 +38,7 @@ export function mutateBrain(brain) {
 }
 
 function activate(value) {
-    return Mathtanh(value);
+    return Math.tanh(value);
 }
 
 export function decideWithDetails(game, brain) {

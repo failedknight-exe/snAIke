@@ -77,7 +77,7 @@ export class SnakeGame {
     }
 
     isDanger(direction) {
-        if (this.over || this.snake.length) return 1;
+        if (this.over) return 1;
 
         const next = this.getNextPosition(direction);
 

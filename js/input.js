@@ -1,5 +1,5 @@
 const KEYS = {
-    ArroeUp: 0,
+    ArrowUp: 0,
     w: 0,
     W: 0,
 

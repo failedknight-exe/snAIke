@@ -39,7 +39,7 @@ export class Renderer {
 
         if (!game) return;
 
-        if (game, food) {
+        if (game.food) {
             ctx.fillStyle = "#e53935"
             ctx.fillRect(
                 game.food.x * size + 3,

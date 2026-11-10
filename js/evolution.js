@@ -26,7 +26,7 @@ export class Evolution {
     }
 
     newPopulation(size) {
-        this.population = size;
+        this.populationSize = size;
 
         this.population = Array.from( { length: size}, () => createBrain() );
 
@@ -77,9 +77,10 @@ export class Evolution {
         }
     }
 
-    finishedIndividual(individual) {
+    finishIndividual(individual) {
         individual.finished = true;
         individual.fitness = calculateFitness(individual.game);
+        this.bestScore = Math.max(this.bestScore, individual.game.score);
 
         this.results.push({
             brain: individual.brain,
@@ -94,7 +95,7 @@ export class Evolution {
         }
     }
 
-    finishedGeneration() {
+    finishGeneration() {
         this.results.sort( (a, b) => b.fitness - a.fitness );
 
         const totalScore = this.results.reduce( (sum, result) => sum + result.score, 0 );
@@ -136,7 +137,7 @@ export class Evolution {
                 Math.floor(Math.random() * parentPool.length)
             ];
 
-            const child = crossoverBrains(a.brain, b.brain);
+            const child = crossoverBrain(a.brain, b.brain);
 
             next.push(mutateBrain(child));
         }
@@ -168,7 +169,7 @@ export class Evolution {
 
             if(!saved) return false;
 
-            const data = JSON.stringify(saved);
+            const data = JSON.parse(saved);
 
             if ( !Array.isArray(data.champion?.weights) || data.champion?.weights.length !== 147) {
                 return false;
